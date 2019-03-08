@@ -5686,7 +5686,10 @@ namespace wiz {
 
 				bool end = false;
 				{
+					int a = clock();
 					end = !reserver(&strVec, option, lex_thr_num, buffer);
+					int b = clock();
+					std::cout << b - a << "ms ";
 				}
 
 				UserType* before_next = nullptr;
@@ -5694,12 +5697,13 @@ namespace wiz {
 
 				bool first = true;
 				long long sum = 0;
-
+int a, c;
 				while (true) {
 					end = true;
 
-					std::chrono::steady_clock::time_point a = std::chrono::steady_clock::now();
-
+					
+					a = clock();
+					
 					std::set<int> _pivots;
 					std::vector<int> pivots;
 					const int last_idx = strVec.size() - 1;
@@ -5708,7 +5712,7 @@ namespace wiz {
 						std::vector<int> pivot;
 
 						for (int i = 0; i < pivot_num; ++i) {
-							pivot.push_back(FindRight(strVec, (last_idx / (pivot_num + 1)) * (i), (last_idx / (pivot_num + 1)) * (i + 1) - 1, option));
+							pivot.push_back(FindRight2(strVec, (last_idx / (pivot_num + 1)) * (i), (last_idx / (pivot_num + 1)) * (i + 1) - 1, option));
 						}
 
 						for (int i = 0; i < pivot.size(); ++i) {
@@ -5748,7 +5752,7 @@ namespace wiz {
 						for (int i = 0; i < thr.size(); ++i) {
 							thr[i].join();
 						}
-
+						c = clock();
 						// Merge
 						try {
 							if (first) {
@@ -5782,9 +5786,7 @@ namespace wiz {
 						before_next = next.back();
 					}
 
-					std::chrono::steady_clock::time_point b = std::chrono::steady_clock::now();
-					sum = sum + std::chrono::steady_clock::duration(b - a).count(); //std::cout << b - a << "ms" << std::endl;
-
+					
 					if (!end) {
 						//
 					}
@@ -5792,10 +5794,12 @@ namespace wiz {
 						break;
 					}
 				}
-
+int b = clock();
 				delete[] buffer;
 
 				global = std::move(_global);
+				std::cout << b - a << "ms" << " " << b - c << "ms" << "\n";
+					
 
 				return true;
 			}
@@ -5807,7 +5811,10 @@ namespace wiz {
 
 				bool end = false;
 				{
+					int a = clock();
 					end = !reserver(&strVec, option, lex_thr_num, buffer);
+					int b = clock();
+					std::cout << b - a << "ms ";
 				}
 
 				Node* before_next = nullptr;
@@ -5819,7 +5826,8 @@ namespace wiz {
 				while (true) {
 					end = true;
 
-					std::chrono::steady_clock::time_point a = std::chrono::steady_clock::now();
+					int a = clock();
+					int c;
 
 					std::set<int> _pivots;
 					std::vector<int> pivots;
@@ -5869,7 +5877,7 @@ namespace wiz {
 							thr[i].join();
 						}
 					
-
+						c = clock();
 						// Merge
 						try 
 						{
@@ -5904,9 +5912,9 @@ namespace wiz {
 						before_next = next.back();
 					}
 
-					std::chrono::steady_clock::time_point b = std::chrono::steady_clock::now();
-					sum = sum + std::chrono::steady_clock::duration(b - a).count(); //std::cout << b - a << "ms" << std::endl;
-
+					int b = clock();
+					std::cout << b - a << "ms";
+					std::cout << " " << b - c << "ms\n";
 					if (!end) {
 						//
 					}
