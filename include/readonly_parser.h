@@ -101,8 +101,8 @@ namespace wiz {
 		bool operator() (const T t1, const T t2) const { return *t1 == *t2; }
 	};
 
-	template <typename T> /// x is 10진수..
-	inline T pos_1(const T x, const int base = 10) // 1�리 �계산
+	template <typename T> /// x is 10吏꾩닔..
+	inline T pos_1(const T x, const int base = 10) // 1먮━ 媛怨꾩궛
 	{
 		if (x >= 0) { return x % base; }// x - ( x / 10 ) * 10; }
 		else { return (x / base) * base - x; }
@@ -120,7 +120,7 @@ namespace wiz {
 		std::string tempString;
 		int k;
 		bool isMinus = (i < 0);
-		temp[INT_SIZE + 1] = '\0'; ///문자�시..
+		temp[INT_SIZE + 1] = '\0'; ///臾몄옄쒖떆..
 
 		for (k = INT_SIZE; k >= 1; k--) {
 			T val = pos_1<T>(i, base); /// 0 ~ base-1
@@ -130,7 +130,7 @@ namespace wiz {
 
 			i /= base;
 
-			if (0 == i) { // �자.
+			if (0 == i) { // レ옄.
 				k--;
 				break;
 			}
@@ -163,7 +163,7 @@ namespace wiz {
 		std::string tempString;
 		int k;
 		bool isMinus = (i < 0);
-		temp[INT_SIZE + 1] = '\0'; ///문자�시..
+		temp[INT_SIZE + 1] = '\0'; ///臾몄옄쒖떆..
 
 		for (k = INT_SIZE; k >= 1; k--) {
 			T val = pos_1<T>(i, base); /// 0 ~ base-1
@@ -173,7 +173,7 @@ namespace wiz {
 
 			i /= base;
 
-			if (0 == i) { // �자.
+			if (0 == i) { // レ옄.
 				k--;
 				break;
 			}
@@ -204,7 +204,7 @@ namespace wiz {
 		return toStr<int>(x);
 	}
 
-	template <typename T> /// �출�때 �아체크�다
+	template <typename T> /// 몄텧좊븣 뚯븘泥댄겕쒕떎
 	inline std::string _toString(const T x)
 	{
 		std::stringstream strs;
@@ -943,21 +943,18 @@ namespace wiz {
 	class LoadDataOption
 	{
 	public:
-		std::vector<std::string> LineComment;	// # 
-		std::vector<std::string> MuitipleLineCommentStart; // ###  // ?
-		std::vector<std::string> MuitipleLineCommentEnd;   // ### // ?
-		std::vector<char> Left, Right;	// { } , [ ] <- json
-		std::vector<char> Assignment;	// = , :
-		std::vector<char> Removal;		// ',', empty. 
+		char LineComment=0;	// # 
+		char Left=0, Left2=0, Right=0, Right2=0;	// { } , [ ] <- json
+		char Assignment=0;	// = , :
+		char Removal=0;		// ',', empty. 
 	};
 
-	inline int Equal(const std::vector<char> & option, const char ch)
+	inline int Equal(const char& option, const char ch)
 	{
-		for (int i = 0; i < option.size(); ++i) {
-			if (ch == option[i]) {
-				return i;
-			}
+		if (ch == option) {
+			return 0;
 		}
+
 		return -1;
 	}
 
@@ -1013,7 +1010,7 @@ namespace wiz {
 			}
 		public:
 			void operator() () {
-				//std::string* strVecTemp = strVec; // enterkey �������� ���������ִٰ� �����Ѵ�.
+				//std::string* strVecTemp = strVec; // enterkey 기준으로 나뉘어져있다고 가정한다.
 				//for (int x = 0; x <= 0; ++x)
 				{
 					//StringTokenizer tokenizer(std::move( (*strVecTemp)[x] ) );
@@ -1030,35 +1027,7 @@ namespace wiz {
 					for (int i = 0; i < statement.Size(); ++i) {
 						int idx;
 
-						if (isMultipleLineComment && -1 != (idx = checkDelimiter(statement, i, option->MuitipleLineCommentEnd)))
-						{
-							isMultipleLineComment = false;
-
-							for (int j = 0; j < option->MuitipleLineCommentEnd[idx].size(); ++j)
-							{
-								token.push_back(statement[i + j]);
-							}
-
-							aq->emplace_back(std::move(token), true);
-
-							i = i + option->MuitipleLineCommentEnd[idx].size() - 1;
-
-							statement.Divide(i);
-							statement.LeftShift(i + 1);
-
-							token.clear();
-
-							token_first = 0;
-							token_last = 0;
-
-							i = -1;
-						}
-						else if (isMultipleLineComment) {
-							token_last = i;
-
-							token.push_back(statement[i]);
-						}
-						else if (0 == state && '\'' == statement[i]) {
+						if (0 == state && '\'' == statement[i]) {
 							//token_last = i - 1;
 							//if (token_last >= 0 && token_last - token_first + 1 > 0) {
 							//	aq->emplace_back(statement.substr(token_first, token_last - token_first + 1));
@@ -1133,14 +1102,14 @@ namespace wiz {
 
 								statement.LeftShift(i + 1);
 
-								aq->emplace_back(std::string("") + option->Assignment[idx], false);
+								aq->emplace_back(std::string("") + option->Assignment, false);
 								token_first = 0;
 								token_last = 0;
 
 								i = -1;
 							}
 							else {
-								aq->emplace_back(std::string("") + option->Assignment[idx], false);
+								aq->emplace_back(std::string("") + option->Assignment, false);
 								statement.LeftShift(1);
 
 								token.clear();
@@ -1180,7 +1149,7 @@ namespace wiz {
 								aq->emplace_back(std::move(token), false);
 								statement.LeftShift(i + 1);
 
-								aq->emplace_back(std::string("") + option->Left[idx], false);
+								aq->emplace_back(std::string("") + option->Left, false);
 								token.clear();
 								token_first = 0;
 								token_last = 0;
@@ -1188,7 +1157,7 @@ namespace wiz {
 								i = -1;
 							}
 							else {
-								aq->emplace_back(std::string("") + option->Left[idx], false);
+								aq->emplace_back(std::string("") + option->Left, false);
 								statement.LeftShift(1);
 								token.clear();
 								token_first = 0;
@@ -1205,7 +1174,7 @@ namespace wiz {
 								aq->emplace_back(std::move(token), false);
 								statement.LeftShift(i + 1);
 
-								aq->emplace_back(std::string("") + option->Right[idx], false);
+								aq->emplace_back(std::string("") + option->Right, false);
 
 								token.clear();
 								token_first = 0;
@@ -1214,7 +1183,7 @@ namespace wiz {
 								i = -1;
 							}
 							else {
-								aq->emplace_back(std::string("") + option->Right[idx], false);
+								aq->emplace_back(std::string("") + option->Right, false);
 
 								statement.LeftShift(1);
 
@@ -1224,30 +1193,8 @@ namespace wiz {
 								i = -1;
 							}
 						}
-						else if (0 == state && option->MuitipleLineCommentStart.empty() == false
-							&& -1 != (idx = checkDelimiter(statement, i, option->MuitipleLineCommentStart))) { // different from load_data_from_file
-							token_last = i - 1;
-							if (token_last >= 0 && token_last - token_first + 1 > 0) {
-								statement.Divide(i);
-								aq->emplace_back(std::move(token), false);
-
-								statement.LeftShift(i + option->MuitipleLineCommentStart[idx].size());
-								i = -1;
-
-								token_first = 0;
-								token_last = 0;
-							}
-							else {
-								statement.LeftShift(i + option->MuitipleLineCommentStart[idx].size());
-								i = -1;
-							}
-
-							token = option->MuitipleLineCommentStart[idx];
-
-							isMultipleLineComment = true;
-						}
-						else if (0 == state && option->LineComment.empty() == false &&
-							-1 != checkDelimiter(statement, i, option->LineComment)) { // different from load_data_from_file
+						else if (0 == state &&
+							-1 != Equal(statement[i], option->LineComment)) { // different from load_data_from_file
 							token_last = i - 1;
 							if (token_last >= 0 && token_last - token_first + 1 > 0) {
 								char temp = statement[i];
@@ -1315,15 +1262,19 @@ namespace wiz {
 		private:
 			char* start;
 			char* last;
+			std::vector<long long> length;
 		public:
 			VECTOR<Token2>* aq;
-			const wiz::LoadDataOption* option;
+			const wiz::LoadDataOption* option; // wiz::LoadDatOption2 ?
 			//int strVecStart;
 			//int strVecEnd;
 		public:
 			DoThread3(char* start, char* last, VECTOR<Token2>* aq, const wiz::LoadDataOption* option) //, list<std::string>* aq)//, int strVecStart, int strVecEnd)
 				: start(start), last(last), aq(aq), option(option) // , strVecStart(strVecStart), strVecEnd(strVecEnd)
 			{
+				length.resize(((long long)(last - start)) + 1, 0);
+			}
+			~DoThread3() {
 				//
 			}
 		private:
@@ -1355,18 +1306,21 @@ namespace wiz {
 
 				return -1;
 			}
-		public:
-			void operator() () {
+		
+			long long chk2(bool make) {
 				{
+					long long start_idx = 0;
+					long long last_idx = 0;
+					long long count = 0;
 					char* token_first = start;
 					char* token_last = start; // idx of token in statement.
 					int state = 0;
-					std::string token;
+					std::string token; // removal! - todo
 
-					for (char* x = start; x < last; ++x) {
+					long long now_idx = 0;
+					for (char* x = start; x < last; ++x, ++now_idx) {
 						int offset = 0;
 						int idx;
-
 						if (0 == state && '\'' == *x) {
 							//token_last = x - 1;
 							//if (token_last >= 0 && token_last - token_first + 1 > 0) {
@@ -1375,15 +1329,18 @@ namespace wiz {
 							state = 2;
 							//token_first = i; 
 							token_last = x;
+							last_idx = now_idx;
 
 							token.push_back(*x);
 						}
 						else if (2 == state && '\\' == *(x - 1) && '\'' == *x) {
 							token_last = x;
+							last_idx = now_idx;
 							token.push_back(*x);
 						}
 						else if (2 == state && '\'' == *x) {
 							state = 0; token_last = x;
+							last_idx = now_idx;
 							token.push_back(*x);
 						}
 						else if (0 == state && '\"' == *x) {
@@ -1395,114 +1352,205 @@ namespace wiz {
 							state = 1;
 							//token_first = i; 
 							token_last = x;
+							last_idx = now_idx;
 							token.push_back(*x);
 						}
 						else if (1 == state && '\\' == *(x - 1) && '\"' == *x) {
 							token_last = x;
+							last_idx = now_idx;
 							token.push_back(*x);
 						}
 						else if (1 == state && '\"' == *x) {
 							state = 0; token_last = x;
+							last_idx = now_idx;
 							token.push_back(*x);
 						}
 						else if (0 == state && -1 != (idx = Equal(option->Removal, *x)))
 						{
 							token_last = x - 1;
+							last_idx = now_idx - 1;
 
 							if (token_last >= 0 && token_last - token_first + 1 > 0) {
-								aq->emplace_back(token_first, token_last - token_first + 1, false);
+								if (make) {
+									aq->emplace_back(token_first, token_last - token_first + 1, false);
+									
+								}
+								else {
+									length[start_idx] = token_last - token_first + 1;
+									count++;
+								}
+
 								token.clear();
 
 								token_first = x + 1;
+								start_idx = now_idx + 1;
 							}
 							else {
 								token.clear();
 
 								token_first = token_first + 1;
+								start_idx = start_idx + 1;
 							}
 							continue;
 						}
 						else if (0 == state && -1 != (idx = Equal(option->Assignment, *x))) {
 							token_last = x - 1;
+							last_idx = now_idx - 1;
 
 							if (token_last >= 0 && token_last - token_first + 1 > 0) {
-								aq->emplace_back(token_first, token_last - token_first + 1, false);
-
+								if (make) {
+									aq->emplace_back(token_first, token_last - token_first + 1, false);
+									
+								}
+								else {
+									length[start_idx] = token_last - token_first + 1;
+									count++;
+								}
 								token.clear();
 
 								token_first = x + 1;
-
-								aq->emplace_back(x, 1, false);
+								start_idx = now_idx + 1;
+								if (make) {
+									aq->emplace_back(x, 1, false);
+									
+								}
+								else {
+									length[start_idx] = 1;count++;
+								}
 							}
 							else {
-								aq->emplace_back(x, 1, false);
+								if (make) {
+									aq->emplace_back(x, 1, false);
+								}
+								else {
+									length[start_idx] = 1; count++;
+								}
 								token_first = token_first + 1;
+								start_idx = start_idx + 1;
 
 								token.clear();
 							}
 						}
 						else if (0 == state && isWhitespace(*x)) { // isspace ' ' \t \r \n , etc... ?
 							token_last = x - 1;
+							last_idx = now_idx - 1;
 							if (token_last >= 0 && token_last - token_first + 1 > 0) {
-
-								aq->emplace_back(token_first, token_last - token_first + 1, false);
-
+								if (make) {
+									aq->emplace_back(token_first, token_last - token_first + 1, false);
+									
+								}
+								else {
+									length[start_idx] = token_last - token_first + 1;count++;
+								}
 								token_first = x + 1;
+
+								start_idx = now_idx + 1;
 								token.clear();
 							}
 							else
 							{
 								token_first = token_first + 1;
+								start_idx = start_idx + 1;
 								token.clear();
 							}
 						}
 						else if (0 == state && -1 != (idx = Equal(option->Left, *x))) {
 							token_last = x - 1;
+							last_idx = now_idx - 1;
 							if (token_last >= 0 && token_last - token_first + 1 > 0) {
-
-								aq->emplace_back(token_first, token_last - token_first + 1, false);
+								if (make) {
+									aq->emplace_back(token_first, token_last - token_first + 1, false);
+									
+								}
+								else {
+									length[start_idx] = token_last - token_first + 1;count++;
+								}
 								token_first = x + 1;
 
-								aq->emplace_back(x, 1, false);
+								start_idx = now_idx + 1;
+								if (make) {
+									aq->emplace_back(x, 1, false);
+									count++;
+								}
+								else {
+									length[start_idx] = 1;
+								}
 								token.clear();
 							}
 							else {
-								aq->emplace_back(x, 1, false);
+								if (make) {
+									aq->emplace_back(x, 1, false);
+									
+								}
+								else {
+									length[start_idx] = 1;count++;
+								}
 								token_first = token_first + 1;
+								start_idx = start_idx + 1;
 								token.clear();
 							}
 						}
 						else if (0 == state && -1 != (idx = Equal(option->Right, *x))) {
 							token_last = x - 1;
+							last_idx = now_idx - 1;
 							if (token_last >= 0 && token_last - token_first + 1 > 0) {
-
-								aq->emplace_back(token_first, token_last - token_first + 1, false);
+								if (make) {
+									aq->emplace_back(token_first, token_last - token_first + 1, false);
+									
+								}
+								else {
+									length[start_idx] = token_last - token_first + 1;count++;
+								}
 								token_first = x + 1;
-
-								aq->emplace_back(x, 1, false);
-
+								start_idx = now_idx + 1;
+								if (make) {
+									aq->emplace_back(x, 1, false);
+									
+								}
+								else {
+									length[start_idx] = 1;count++;
+								}
 								token.clear();
 							}
 							else {
-								aq->emplace_back(x, 1, false);
-
+								if (make) {
+									aq->emplace_back(x, 1, false);
+									
+								}
+								else {
+									length[start_idx] = 1;count++;
+								}
 								token_first = token_first + 1;
+								start_idx = start_idx + 1;
 
 								token.clear();
 							}
 						}
-						else if (0 == state && option->LineComment.empty() == false &&
-							-1 != checkDelimiter(x, last, option->LineComment)) { // different from load_data_from_file
+						else if (0 == state &&
+							-1 != Equal(*x, option->LineComment)) { // different from load_data_from_file
 							token_last = x - 1;
+							last_idx = now_idx - 1;
 							if (token_last >= 0 && token_last - token_first + 1 > 0) {
-								aq->emplace_back(token_first, token_last - token_first + 1, false);
+								if (make) {
+									aq->emplace_back(token_first, token_last - token_first + 1, false);
+									
+								}
+								else {
+									length[start_idx] = token_last - token_first + 1;count++;
+								}
 								token.clear();
 								x = token_last + 1;
+								now_idx = last_idx + 1;
 								token_first = token_last + 1;
+								start_idx = last_idx + 1;
 								token_last = token_last + 1;
+
+								last_idx = last_idx + 1;
 							}
 							for (; x < last; ++x) {
 								token_last++;
+
+								last_idx++;
 								if (*x == '\n' || *x == '\0') // cf) '\r' ? '\0'?
 								{
 									break;
@@ -1510,6 +1558,7 @@ namespace wiz {
 							}
 							//aq->emplace_back(token_first, token_last - token_first + 1, true); // cancel?
 							token_first = x + 1;
+							start_idx = now_idx + 1;
 							offset = 1;
 						}
 						else {
@@ -1517,11 +1566,36 @@ namespace wiz {
 						}
 
 						token_last = x + offset;
+
+						last_idx = now_idx + offset;
 					}
 
 					if (token_first < last)
 					{
-						aq->emplace_back(token_first, last - 1 - token_first + 1, false);
+						if (make) {
+							aq->emplace_back(token_first, last - 1 - token_first + 1, false);
+							
+						}
+						else {
+							length[start_idx] = last - 1 - token_first + 1;count++;
+						}
+					}
+
+					return count;
+				}
+			}
+		public:
+			void operator() () {
+				long long size = chk2(false);
+				aq->reserve(size);
+				
+				for (int i = 0; i < length.size();) {
+					if (length[i] > 0) {
+						aq->emplace_back(this->start + i, length[i], false);
+						i += length[i];
+					}
+					else {
+						++i;
 					}
 				}
 			}
@@ -1682,7 +1756,7 @@ namespace wiz {
 
 				for (int i = 0; i < thr_num; ++i) {
 					//	std::cout << last[i] - start[i] << std::endl;
-					partial_list[i].reserve((last[i] - start[i]) / 10);
+					//partial_list[i].reserve((last[i] - start[i]) / 10);
 					thr[i] = std::thread(DoThread3(buffer + start[i], buffer + last[i], &partial_list[i], &option));
 				}
 
@@ -2098,7 +2172,7 @@ namespace wiz {
 				return *this;
 			}
 		private:
-			void Reset(const UserType & ut) { /// UT ��ü�� �����Ѵ�.
+			void Reset(const UserType & ut) { /// UT 占쏙옙체占쏙옙 占쏙옙占쏙옙占싼댐옙.
 											 //	userTypeList_sortFlagA = ut.userTypeList_sortFlagA;
 											 //userTypeList_sortFlagB = ut.userTypeList_sortFlagB;
 
@@ -2254,7 +2328,7 @@ namespace wiz {
 				for (int i = 0; i < ilist.size(); ++i) {
 					if (ilist[i] == 1) { count++; }
 					if (count == idx + 1) {
-						// i���� left shift!and resize!
+						// i占쏙옙占쏙옙 left shift!and resize!
 						for (int k = i + 1; k < ilist.size(); ++k) {
 							ilist[k - 1] = std::move(ilist[k]);
 						}
@@ -2281,7 +2355,7 @@ namespace wiz {
 				for (int i = 0; i < ilist.size(); ++i) {
 					if (ilist[i] == 2) { count++; }
 					if (count == idx + 1) {
-						// i���� left shift!and resize!
+						// i占쏙옙占쏙옙 left shift!and resize!
 						for (int k = i + 1; k < ilist.size(); ++k) {
 							ilist[k - 1] = std::move(ilist[k]);
 						}
@@ -5964,10 +6038,10 @@ int b = clock();
 				try {
 					InFileReserver3 ifReserver(inFile);
 					wiz::LoadDataOption option;
-					option.Assignment.push_back('=');
-					option.Left.push_back('{');
-					option.Right.push_back('}');
-					option.LineComment.push_back("#");
+					option.Assignment = ('=');
+					option.Left = ('{');
+					option.Right = ('}');
+					option.LineComment = ('#');
 
 					ifReserver.Num = 1 << 19;
 					//	strVec.reserve(ifReserver.Num);
@@ -6022,10 +6096,10 @@ int b = clock();
 				try {
 					InFileReserver3 ifReserver(inFile);
 					wiz::LoadDataOption option;
-					option.Assignment.push_back('=');
-					option.Left.push_back('{');
-					option.Right.push_back('}');
-					option.LineComment.push_back("#");
+					option.Assignment = ('=');
+					option.Left = ('{');
+					option.Right = ('}');
+					option.LineComment = ('#');
 
 					char* buffer = nullptr;
 					ifReserver.Num = 1 << 19;
@@ -6060,14 +6134,10 @@ int b = clock();
 				wiz::StringBuilder builder(str.size(), str.c_str(), str.size());
 
 				wiz::LoadDataOption option;
-				option.Assignment.push_back('=');
-				option.Left.push_back('{');
-
-				//option.MuitipleLineCommentStart.push_back("###");
-				//option.MuitipleLineCommentEnd.push_back("###");
-
-				option.LineComment.push_back("#");
-				option.Right.push_back('}');
+				option.Assignment = ('=');
+				option.Left = ('{');
+				option.Right = ('}');
+				option.LineComment = ('#');
 				Utility::DoThread doThread(&builder, &strVec, &option);
 
 				doThread();
