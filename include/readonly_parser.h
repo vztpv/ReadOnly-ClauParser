@@ -1262,17 +1262,18 @@ namespace wiz {
 		private:
 			char* start;
 			char* last;
-			std::vector<long long> length;
 		public:
 			VECTOR<Token2>* aq;
 			const wiz::LoadDataOption* option; // wiz::LoadDatOption2 ?
-			//int strVecStart;
+			std::vector<long long>* _length;
+											   //int strVecStart;
 			//int strVecEnd;
 		public:
-			DoThread3(char* start, char* last, VECTOR<Token2>* aq, const wiz::LoadDataOption* option) //, list<std::string>* aq)//, int strVecStart, int strVecEnd)
+			DoThread3(char* start, char* last, VECTOR<Token2>* aq, const wiz::LoadDataOption* option,
+			std::vector<long long>* _length) //, list<std::string>* aq)//, int strVecStart, int strVecEnd)
 				: start(start), last(last), aq(aq), option(option) // , strVecStart(strVecStart), strVecEnd(strVecEnd)
 			{
-				length.resize(((long long)(last - start)) + 1, 0);
+				this->_length = _length;
 			}
 			~DoThread3() {
 				//
@@ -1309,14 +1310,17 @@ namespace wiz {
 		
 			long long chk2(bool make) {
 				{
+					std::vector<long long>& length = *_length;
+
+					//length.resize(((long long)(last - start)) + 1);
+
 					long long start_idx = 0;
 					long long last_idx = 0;
 					long long count = 0;
 					char* token_first = start;
 					char* token_last = start; // idx of token in statement.
 					int state = 0;
-					std::string token; // removal! - todo
-
+					
 					long long now_idx = 0;
 					for (char* x = start; x < last; ++x, ++now_idx) {
 						int offset = 0;
@@ -1330,18 +1334,14 @@ namespace wiz {
 							//token_first = i; 
 							token_last = x;
 							last_idx = now_idx;
-
-							token.push_back(*x);
 						}
 						else if (2 == state && '\\' == *(x - 1) && '\'' == *x) {
 							token_last = x;
 							last_idx = now_idx;
-							token.push_back(*x);
 						}
 						else if (2 == state && '\'' == *x) {
 							state = 0; token_last = x;
 							last_idx = now_idx;
-							token.push_back(*x);
 						}
 						else if (0 == state && '\"' == *x) {
 							//token_last = x - 1;
@@ -1353,17 +1353,14 @@ namespace wiz {
 							//token_first = i; 
 							token_last = x;
 							last_idx = now_idx;
-							token.push_back(*x);
 						}
 						else if (1 == state && '\\' == *(x - 1) && '\"' == *x) {
 							token_last = x;
 							last_idx = now_idx;
-							token.push_back(*x);
 						}
 						else if (1 == state && '\"' == *x) {
 							state = 0; token_last = x;
 							last_idx = now_idx;
-							token.push_back(*x);
 						}
 						else if (0 == state && -1 != (idx = Equal(option->Removal, *x)))
 						{
@@ -1380,14 +1377,11 @@ namespace wiz {
 									count++;
 								}
 
-								token.clear();
 
 								token_first = x + 1;
 								start_idx = now_idx + 1;
 							}
 							else {
-								token.clear();
-
 								token_first = token_first + 1;
 								start_idx = start_idx + 1;
 							}
@@ -1406,7 +1400,6 @@ namespace wiz {
 									length[start_idx] = token_last - token_first + 1;
 									count++;
 								}
-								token.clear();
 
 								token_first = x + 1;
 								start_idx = now_idx + 1;
@@ -1415,7 +1408,7 @@ namespace wiz {
 									
 								}
 								else {
-									length[start_idx] = 1;count++;
+									length[now_idx] = 1;count++;
 								}
 							}
 							else {
@@ -1423,12 +1416,11 @@ namespace wiz {
 									aq->emplace_back(x, 1, false);
 								}
 								else {
-									length[start_idx] = 1; count++;
+									length[now_idx] = 1; count++;
 								}
 								token_first = token_first + 1;
 								start_idx = start_idx + 1;
 
-								token.clear();
 							}
 						}
 						else if (0 == state && isWhitespace(*x)) { // isspace ' ' \t \r \n , etc... ?
@@ -1445,13 +1437,11 @@ namespace wiz {
 								token_first = x + 1;
 
 								start_idx = now_idx + 1;
-								token.clear();
 							}
 							else
 							{
 								token_first = token_first + 1;
 								start_idx = start_idx + 1;
-								token.clear();
 							}
 						}
 						else if (0 == state && -1 != (idx = Equal(option->Left, *x))) {
@@ -1473,9 +1463,8 @@ namespace wiz {
 									count++;
 								}
 								else {
-									length[start_idx] = 1;
+									length[now_idx] = 1;
 								}
-								token.clear();
 							}
 							else {
 								if (make) {
@@ -1483,11 +1472,10 @@ namespace wiz {
 									
 								}
 								else {
-									length[start_idx] = 1;count++;
+									length[now_idx] = 1;count++;
 								}
 								token_first = token_first + 1;
 								start_idx = start_idx + 1;
-								token.clear();
 							}
 						}
 						else if (0 == state && -1 != (idx = Equal(option->Right, *x))) {
@@ -1508,9 +1496,8 @@ namespace wiz {
 									
 								}
 								else {
-									length[start_idx] = 1;count++;
+									length[now_idx] = 1;count++;
 								}
-								token.clear();
 							}
 							else {
 								if (make) {
@@ -1518,12 +1505,11 @@ namespace wiz {
 									
 								}
 								else {
-									length[start_idx] = 1;count++;
+									length[now_idx] = 1;count++;
 								}
 								token_first = token_first + 1;
 								start_idx = start_idx + 1;
 
-								token.clear();
 							}
 						}
 						else if (0 == state &&
@@ -1538,7 +1524,6 @@ namespace wiz {
 								else {
 									length[start_idx] = token_last - token_first + 1;count++;
 								}
-								token.clear();
 								x = token_last + 1;
 								now_idx = last_idx + 1;
 								token_first = token_last + 1;
@@ -1586,18 +1571,18 @@ namespace wiz {
 			}
 		public:
 			void operator() () {
-				long long size = chk2(false);
-				aq->reserve(size);
-				
-				for (int i = 0; i < length.size();) {
-					if (length[i] > 0) {
-						aq->emplace_back(this->start + i, length[i], false);
-						i += length[i];
-					}
-					else {
-						++i;
-					}
-				}
+				long long size = chk2(true);
+				///aq->reserve(size);
+				//std::vector<long long>& length = *_length;
+				//for (int i = 0; i < length.size();) {
+				//	if (length[i] > 0) {
+				//		aq->emplace_back(this->start + i, length[i], false);
+				//		i += (length)[i];
+				//	}
+				//	else {
+				//		++i;
+				//	}
+				//}
 			}
 		};
 		// no enter strings? " abc \n def " and problem - one line!?
@@ -1753,11 +1738,11 @@ namespace wiz {
 
 				std::vector<VECTOR<Token2>> partial_list(thr_num, VECTOR<Token2>());
 				std::vector<std::thread> thr(thr_num);
-
+				std::vector<std::vector<long long>> length(thr_num);
 				for (int i = 0; i < thr_num; ++i) {
 					//	std::cout << last[i] - start[i] << std::endl;
-					//partial_list[i].reserve((last[i] - start[i]) / 10);
-					thr[i] = std::thread(DoThread3(buffer + start[i], buffer + last[i], &partial_list[i], &option));
+					//partial_list[i].reserve((last[i] - start[i]) / 10;
+					thr[i] = std::thread(DoThread3(buffer + start[i], buffer + last[i], &partial_list[i], &option, &length[i]));
 				}
 
 				for (int i = 0; i < thr_num; ++i) {
@@ -1782,8 +1767,8 @@ namespace wiz {
 				VECTOR<Token2> temp;
 
 				temp.reserve((last[0] - start[0]) / 10);
-
-				DoThread3 dothr(buffer + start[0], buffer + last[0], &temp, &option);
+				std::vector<long long> length;
+				DoThread3 dothr(buffer + start[0], buffer + last[0], &temp, &option, &length);
 
 				dothr();
 
@@ -6137,7 +6122,8 @@ int b = clock();
 				option.Assignment = ('=');
 				option.Left = ('{');
 				option.Right = ('}');
-				option.LineComment = ('#');
+				option.LineComment = ('#'); 
+				// option.removal - remove?
 				Utility::DoThread doThread(&builder, &strVec, &option);
 
 				doThread();
