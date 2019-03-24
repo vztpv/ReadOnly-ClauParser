@@ -15,6 +15,7 @@
 #include <cstring>
 #include <ctime>
 
+#include <stack>
 #include <list>
 #include <vector>
 #include <deque>
@@ -101,8 +102,8 @@ namespace wiz {
 		bool operator() (const T t1, const T t2) const { return *t1 == *t2; }
 	};
 
-	template <typename T> /// x is 10吏꾩닔..
-	inline T pos_1(const T x, const int base = 10) // 1먮━ 媛怨꾩궛
+	template <typename T> /// x is 10진수..
+	inline T pos_1(const T x, const int base = 10) // 1�리 �계산
 	{
 		if (x >= 0) { return x % base; }// x - ( x / 10 ) * 10; }
 		else { return (x / base) * base - x; }
@@ -120,7 +121,7 @@ namespace wiz {
 		std::string tempString;
 		int k;
 		bool isMinus = (i < 0);
-		temp[INT_SIZE + 1] = '\0'; ///臾몄옄쒖떆..
+		temp[INT_SIZE + 1] = '\0'; ///문자�시..
 
 		for (k = INT_SIZE; k >= 1; k--) {
 			T val = pos_1<T>(i, base); /// 0 ~ base-1
@@ -130,7 +131,7 @@ namespace wiz {
 
 			i /= base;
 
-			if (0 == i) { // レ옄.
+			if (0 == i) { // �자.
 				k--;
 				break;
 			}
@@ -163,7 +164,7 @@ namespace wiz {
 		std::string tempString;
 		int k;
 		bool isMinus = (i < 0);
-		temp[INT_SIZE + 1] = '\0'; ///臾몄옄쒖떆..
+		temp[INT_SIZE + 1] = '\0'; ///문자�시..
 
 		for (k = INT_SIZE; k >= 1; k--) {
 			T val = pos_1<T>(i, base); /// 0 ~ base-1
@@ -173,7 +174,7 @@ namespace wiz {
 
 			i /= base;
 
-			if (0 == i) { // レ옄.
+			if (0 == i) { // �자.
 				k--;
 				break;
 			}
@@ -204,7 +205,7 @@ namespace wiz {
 		return toStr<int>(x);
 	}
 
-	template <typename T> /// 몄텧좊븣 뚯븘泥댄겕쒕떎
+	template <typename T> /// �출�때 �아체크�다
 	inline std::string _toString(const T x)
 	{
 		std::stringstream strs;
@@ -885,9 +886,11 @@ namespace wiz {
 	class Token2
 	{
 	public:
-		char* str = nullptr;
+		const char* str = nullptr;
 		int len = 0;
 		bool isComment = false;
+		bool isEnd = false;
+		Token2* ptr = nullptr; 
 	public:
 		Token2(char* str, int len, bool isComment) :
 			str(str), len(len), isComment(isComment) { }
@@ -1010,7 +1013,7 @@ namespace wiz {
 			}
 		public:
 			void operator() () {
-				//std::string* strVecTemp = strVec; // enterkey 기준으로 나뉘어져있다고 가정한다.
+				//std::string* strVecTemp = strVec; // enterkey �������� ���������ִٰ� �����Ѵ�.
 				//for (int x = 0; x <= 0; ++x)
 				{
 					//StringTokenizer tokenizer(std::move( (*strVecTemp)[x] ) );
@@ -1749,7 +1752,7 @@ namespace wiz {
 					thr[i].join();
 				}
 
-				int new_size = aq->size() + 2;
+				int new_size = aq->size() + 2; // chk!
 				for (int i = 0; i < thr_num; ++i) {
 					new_size = new_size + partial_list[i].size();
 				}
@@ -2157,7 +2160,7 @@ namespace wiz {
 				return *this;
 			}
 		private:
-			void Reset(const UserType & ut) { /// UT 占쏙옙체占쏙옙 占쏙옙占쏙옙占싼댐옙.
+			void Reset(const UserType & ut) { /// UT ��ü�� �����Ѵ�.
 											 //	userTypeList_sortFlagA = ut.userTypeList_sortFlagA;
 											 //userTypeList_sortFlagB = ut.userTypeList_sortFlagB;
 
@@ -2313,7 +2316,7 @@ namespace wiz {
 				for (int i = 0; i < ilist.size(); ++i) {
 					if (ilist[i] == 1) { count++; }
 					if (count == idx + 1) {
-						// i占쏙옙占쏙옙 left shift!and resize!
+						// i���� left shift!and resize!
 						for (int k = i + 1; k < ilist.size(); ++k) {
 							ilist[k - 1] = std::move(ilist[k]);
 						}
@@ -2340,7 +2343,7 @@ namespace wiz {
 				for (int i = 0; i < ilist.size(); ++i) {
 					if (ilist[i] == 2) { count++; }
 					if (count == idx + 1) {
-						// i占쏙옙占쏙옙 left shift!and resize!
+						// i���� left shift!and resize!
 						for (int k = i + 1; k < ilist.size(); ++k) {
 							ilist[k - 1] = std::move(ilist[k]);
 						}
@@ -5989,6 +5992,70 @@ int b = clock();
 
 				return true;
 			}
+			template <class Reserver>
+			static bool _LoadData7(VECTOR<Token2>& strVec, Reserver& reserver, VECTOR<Token2>& global, const wiz::LoadDataOption& option, const int lex_thr_num, char** out_buffer) // first, strVec.empty() must be true!!
+			{
+				char* buffer = nullptr;
+
+				bool end = false;
+				{
+					Token2 _end(nullptr, 0, false);
+					strVec.push_back(_end);
+					strVec.front().isEnd = true;
+
+					int a = clock();
+					end = !reserver(&strVec, option, lex_thr_num, buffer);
+					int b = clock();
+					std::cout << b - a << "ms ";
+
+					strVec.push_back(_end);
+					strVec.front().isEnd = true;
+				}
+
+				while (true) {
+					end = true;
+
+					int a = clock();
+					
+					{
+						std::stack<int> _stack;
+						_stack.push(0);
+
+						for (int i = 1; i < strVec.size() - 1; ++i) {
+							//if (is_left(strVec[i])) {
+							if (strVec[i].len == 1 && strVec[i].str[0] == '{') {
+								_stack.push(i);
+							}
+							//else if (is_right(strVec[i])) {
+							else if (strVec[i].len == 1 && strVec[i].str[0] == '}') {
+								strVec[_stack.top()].ptr = &strVec[i + 1];
+								strVec[i].ptr = &strVec[_stack.top()];
+
+								_stack.pop();
+							}
+						}
+
+						strVec[_stack.top()].ptr = &strVec[strVec.size() - 1];
+						strVec[strVec.size() - 1].ptr = &strVec[_stack.top()];
+					}
+
+					int b = clock();
+					std::cout << b - a << "ms" << "\n";
+					if (!end) {
+						//
+					}
+					else {
+						break;
+					}
+				}
+
+				//delete[] buffer;
+				*out_buffer = buffer;
+
+				global = std::move(strVec);
+
+				return true;
+			}
 
 			static bool LoadDataFromFile(const std::string & fileName, UserType & global, int pivot_num = -1, int lex_thr_num = 0) /// global should be empty
 			{
@@ -6106,6 +6173,61 @@ int b = clock();
 				
 				global = globalTemp;
 				
+				return true;
+			}
+			
+			static bool LoadDataFromFile3(const std::string& fileName, VECTOR<Token2>& global, int lex_thr_num, char** _buffer) /// global should be empty
+			{
+				if (lex_thr_num <= 0) {
+					lex_thr_num = std::thread::hardware_concurrency();
+				}
+				if (lex_thr_num <= 0) {
+					lex_thr_num = 1;
+				}
+
+
+				bool success = true;
+				std::ifstream inFile;
+				inFile.open(fileName, std::ios::binary);
+
+
+				if (true == inFile.fail())
+				{
+					inFile.close(); return false;
+				}
+				VECTOR<Token2> globalTemp;
+				static VECTOR<Token2> strVec;
+
+				strVec.clear();
+
+				try {
+					InFileReserver3 ifReserver(inFile);
+					wiz::LoadDataOption option;
+					option.Assignment = ('=');
+					option.Left = ('{');
+					option.Right = ('}');
+					option.LineComment = ('#');
+
+					char* buffer = nullptr;
+					ifReserver.Num = 1 << 19;
+					//	strVec.reserve(ifReserver.Num);
+					// cf) empty file..
+					if (false == _LoadData7(strVec, ifReserver, globalTemp, option, lex_thr_num, _buffer))
+					{
+						inFile.close();
+						return false; // return true?
+					}
+
+					inFile.close();
+				}
+				catch (const char* err) { std::cout << err << std::endl; inFile.close(); return false; }
+				catch (const std::string & e) { std::cout << e << std::endl; inFile.close(); return false; }
+				catch (std::exception e) { std::cout << e.what() << std::endl; inFile.close(); return false; }
+				catch (...) { std::cout << "not expected error" << std::endl; inFile.close(); return false; }
+
+
+				global = std::move(globalTemp);
+
 				return true;
 			}
 
