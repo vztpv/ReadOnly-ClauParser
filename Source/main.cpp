@@ -42,41 +42,37 @@ void f(std::vector<wiz::Token2>& vec, wiz::Token2* i) {
 
 int main(void)
 {
-	std::ofstream outFile;
-	outFile.open("output.eu4");
 
-	wiz::load_data::LoadData::Node node;
-	char* buffer = nullptr;
-
-	//int a = clock();
+//	int a = clock();
 	//
-	//::load_data::UserType ut;
-	//wiz::load_data::LoadData::LoadDataFromFile("C:\\Users\\vztpv\\Documents\\Paradox Interactive\\Europa Universalis IV\\save games\\input.eu4", ut, -1, 0);
-	//int b = clock();
-	//std::cout << b - a << "ms\n";
+//	wiz::load_data::UserType ut;
+//	wiz::load_data::LoadData::LoadDataFromFile("C:\\Users\\vztpv\\Documents\\Paradox Interactive\\Europa Universalis IV\\save games\\input.eu4", ut, -1, 0);
+//	int b = clock();
+//	std::cout << b - a << "ms\n";
 	//b = clock();
 	//wiz::load_data::LoadData::LoadDataFromFile2("C:\\Users\\vztpv\\Documents\\Paradox Interactive\\Europa Universalis IV\\save games\\input.eu4", node, -1, 0, &buffer);
 	//int c = clock();
 	//std::cout << c - b << "ms\n";
 	
 
-	std::vector<wiz::Token2> test;
+	wiz::load_data::UserType test;
 	int b = clock();
-	wiz::load_data::LoadData::LoadDataFromFile3("C:\\Users\\vztpv\\Documents\\Paradox Interactive\\Europa Universalis IV\\save games\\input.eu4", test, 0, &buffer);
+	wiz::load_data::LoadData::LoadDataFromFileJson2("C:\\Users\\vztpv\\Desktop\\Clau\\New Json Parser\\New Json Parser\\input.json",
+		test, 0, 0); 
+		//"C:\\Users\\vztpv\\Documents\\Paradox Interactive\\Europa Universalis IV\\save games\\input.eu4", test, 0, & buffer);
 	int c = clock();
 	std::cout << c - b << "ms\n";
-
+	wiz::load_data::LoadData::SaveWizDB(test, "output.json");
 
 	
-	f(test, &test[0]);
+	//f(test, &test[0]);
 
-	delete[] buffer;
+	//delete[] buffer;
 
 
 	//wiz::load_data::LoadData::Print(node.first_child, outFile); // error...
 	//wiz::load_data::LoadData::RemoveAll(&node);
 	//delete[] buffer;
-	outFile.close();
 	
 	//wiz::load_data::LoadData::SaveWizDB(ut, "output.eu4");
 	return 0;
