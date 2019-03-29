@@ -1664,12 +1664,18 @@ namespace wiz {
 		public:
 			const wiz::LoadDataOption* option; // wiz::LoadDatOption2 ?
 			long long* llptr;
+			long long* llptr2;
+			long long* llptr2_len;
+			long long num;
 		public:
 			DoThread4(char* start, char* last, const wiz::LoadDataOption* option,
-				long long* llptr) //, list<std::string>* aq)//, int strVecStart, int strVecEnd)
+				long long* llptr, long long* llptr2, long long num, long long* llptr2_len) //, list<std::string>* aq)//, int strVecStart, int strVecEnd)
 				: start(start), last(last), option(option) // , strVecStart(strVecStart), strVecEnd(strVecEnd)
 			{
 				this->llptr = llptr;
+				this->llptr2 = llptr2;
+				this->num = num;
+				this->llptr2_len = llptr2_len;
 			}
 			~DoThread4() {
 				//
@@ -1707,6 +1713,7 @@ namespace wiz {
 			long long chk2(bool make) {
 				{
 
+					long long llptr2_count = 0;
 					long long start_idx = 0;
 					long long last_idx = 0;
 					long long count = 0;
@@ -1767,6 +1774,9 @@ namespace wiz {
 									//aq->emplace_back(token_first, token_last - token_first + 1, false);
 
 									llptr[start_idx] = token_last - token_first + 1;
+									llptr2[llptr2_count] = start_idx + num; // num : offset
+									llptr2_count++;
+							
 								}
 								else {
 									
@@ -1791,7 +1801,8 @@ namespace wiz {
 								if (make) {
 									//aq->emplace_back(token_first, token_last - token_first + 1, false);{
 									llptr[start_idx] = token_last - token_first + 1;
-
+									llptr2[llptr2_count] = start_idx + num;
+									llptr2_count++;
 								}
 								else {
 									count++;
@@ -1802,6 +1813,8 @@ namespace wiz {
 								if (make) {
 									//aq->emplace_back(x, 1, false);
 									llptr[i] = 1;
+									llptr2[llptr2_count] = i + num;
+									llptr2_count++;
 								}
 								else {
 									 count++;
@@ -1811,6 +1824,8 @@ namespace wiz {
 								if (make) {
 									//aq->emplace_back(x, 1, false);
 									llptr[i] = 1;
+									llptr2[llptr2_count] = i + num;
+									llptr2_count++;
 								}
 								else {
 									
@@ -1829,6 +1844,8 @@ namespace wiz {
 									//aq->emplace_back(token_first, token_last - token_first + 1, false);
 
 									llptr[start_idx] = token_last - token_first + 1;
+									llptr2[llptr2_count] = start_idx + num;
+									llptr2_count++;
 								}
 								else {
 									count++;
@@ -1851,6 +1868,8 @@ namespace wiz {
 								//	aq->emplace_back(token_first, token_last - token_first + 1, false);
 
 									llptr[start_idx] = token_last - token_first + 1;
+									llptr2[llptr2_count] = start_idx + num;
+									llptr2_count++;
 								}
 								else {
 									 count++;
@@ -1861,6 +1880,8 @@ namespace wiz {
 								if (make) {
 								//	aq->emplace_back(x, 1, false);
 									llptr[i] = 1;
+									llptr2[llptr2_count] = i + num;
+									llptr2_count++;
 									
 								}
 								else {
@@ -1871,6 +1892,8 @@ namespace wiz {
 								if (make) {
 								//	aq->emplace_back(x, 1, false);
 									llptr[i] = 1;
+									llptr2[llptr2_count] = i + num;
+									llptr2_count++;
 
 								}
 								else {
@@ -1888,6 +1911,8 @@ namespace wiz {
 								//	aq->emplace_back(token_first, token_last - token_first + 1, false);
 
 									llptr[start_idx] = token_last - token_first + 1;
+									llptr2[llptr2_count] = start_idx + num;
+									llptr2_count++;
 								}
 								else {
 									
@@ -1899,6 +1924,8 @@ namespace wiz {
 								//	aq->emplace_back(x, 1, false);
 
 									llptr[i] = 1;
+									llptr2[llptr2_count] = i + num;
+									llptr2_count++;
 								}
 								else {
 									count++;
@@ -1909,6 +1936,8 @@ namespace wiz {
 								//	aq->emplace_back(x, 1, false);
 
 									llptr[i] = 1;
+									llptr2[llptr2_count] = i + num;
+									llptr2_count++;
 								}
 								else {
 									count++;
@@ -1925,6 +1954,8 @@ namespace wiz {
 								if (make) {
 									llptr[start_idx] = token_last - token_first + 1;
 								//	aq->emplace_back(token_first, token_last - token_first + 1, false);
+									llptr2[llptr2_count] = start_idx + num;
+									llptr2_count++;
 
 								}
 								else {
@@ -1937,6 +1968,8 @@ namespace wiz {
 								//	aq->emplace_back(x, 1, false);
 
 									llptr[i] = 1;
+									llptr2[llptr2_count] = i + num;
+									llptr2_count++;
 								}
 								else {
 									count++;
@@ -1947,6 +1980,8 @@ namespace wiz {
 								//	aq->emplace_back(x, 1, false);
 
 									llptr[i] = 1;
+									llptr2[llptr2_count] = i + num;
+									llptr2_count++;
 								}
 								else {
 									 count++;
@@ -1962,6 +1997,8 @@ namespace wiz {
 								if (make) {
 									llptr[start_idx] = token_last - token_first + 1;
 								//	aq->emplace_back(token_first, token_last - token_first + 1, false);
+									llptr2[llptr2_count] = start_idx + num;
+									llptr2_count++;
 
 								}
 								else {
@@ -1973,6 +2010,8 @@ namespace wiz {
 								//	aq->emplace_back(x, 1, false);
 
 									llptr[i] = 1;
+									llptr2[llptr2_count] = i + num;
+									llptr2_count++;
 								}
 								else {
 									count++;
@@ -1983,6 +2022,8 @@ namespace wiz {
 								//	aq->emplace_back(x, 1, false);
 
 									llptr[i] = 1;
+									llptr2[llptr2_count] = i + num;
+									llptr2_count++;
 								}
 								else {
 									 count++;
@@ -2001,6 +2042,8 @@ namespace wiz {
 								//	aq->emplace_back(token_first, token_last - token_first + 1, false);
 
 									llptr[start_idx] = token_last - token_first + 1;
+									llptr2[llptr2_count] = start_idx + num;
+									llptr2_count++;
 								}
 								else {
 									 count++;
@@ -2048,18 +2091,26 @@ namespace wiz {
 						if (make) {
 							//aq->emplace_back(token_first, last - 1 - token_first + 1, false);
 							llptr[start_idx] = last - 1 - token_first + 1;
+							if (llptr[start_idx] > 0) {
+								llptr2[llptr2_count] = start_idx + num;
+								llptr2_count++;
+							}
 						}
 						else {
 							 count++;
 						}
 					}
 
+					if (this->llptr2_len) {
+						*(this->llptr2_len) = llptr2_count;
+					}
 					return count;
 				}
 			}
 		public:
 			void operator() () {
 				long long size = chk2(true);
+
 				/*aq->reserve(size);
 				std::vector<long long>& length = *_length;
 				int count = 0;
@@ -2279,7 +2330,8 @@ namespace wiz {
 			return{ true, 1 };
 		}
 		// no enter strings? " abc \n def " and problem - one line!?
-		static std::pair<bool, int> Reserve2_4(std::ifstream& inFile, const int num, bool* isFirst, const wiz::LoadDataOption& option, int thr_num, char*& _buffer, long long*& _llptr, long long* _buffer_len)
+		static std::pair<bool, int> Reserve2_4(std::ifstream& inFile, const int num, bool* isFirst, const wiz::LoadDataOption& option, int thr_num, 
+			char*& _buffer, long long*& _llptr, long long* _buffer_len, long long*& _llptr2, long long* _llptr2_len)
 		{
 			if (inFile.eof()) {
 				return { false, 0 };
@@ -2292,6 +2344,7 @@ namespace wiz {
 			char* buffer = nullptr;// = new char[length + 1]; // 
 			std::vector<long long> start(thr_num + 1, 0);
 			std::vector<long long> last(thr_num + 1, 0); 
+			std::vector<long long> llptr2_len(thr_num + 1, 0);
 			long long file_length;
 			if (thr_num > 0) {
 				inFile.seekg(0, inFile.end);
@@ -2358,6 +2411,7 @@ namespace wiz {
 			//int a = clock();
 			//debug
 			long long* llptr = nullptr;
+			long long* llptr2 = nullptr;
 
 			if (thr_num > 0) {
 				//// in string, there are '\r' or '\n' etc.. - no '\r' or '\n'?
@@ -2433,18 +2487,35 @@ namespace wiz {
 				//std::vector<VECTOR<Token2>> partial_list(thr_num, VECTOR<Token2>());
 				std::vector<std::thread> thr(thr_num);
 
-				llptr = new long long[file_length];
-
+				llptr = new long long[file_length]; 
+				llptr2 = new long long[file_length];
+				std::vector<long long> counter(thr_num, 0);
 				for (int i = 0; i < thr_num; ++i) {
 					//	std::cout << last[i] - start[i] << std::endl;
 					//partial_list[i].reserve((last[i] - start[i]) / 10;
-					thr[i] = std::thread(DoThread4(buffer + start[i], buffer + last[i], &option, llptr + start[i]));
+
+					thr[i] = std::thread(DoThread4(buffer + start[i], buffer + last[i], &option, llptr + start[i], llptr2 + start[i], start[i], &counter[i]));
 				}
 
 				for (int i = 0; i < thr_num; ++i) {
 					thr[i].join();
 				}
 
+				int a = clock();
+				long long sum = 0;
+				//
+				for (int i = 1; i < counter.size(); ++i) {
+					sum += counter[i - 1];
+
+					memcpy(llptr2 + sum, llptr2 + start[i], counter[i] * sizeof(long long) / sizeof(char));
+					
+					//for (int j = 0; j < counter[i]; ++j) {
+					//	llptr2[sum + j] = llptr2[start[i] + j];
+					//}
+				}
+				*_llptr2_len = sum + counter.back();
+				int b = clock();
+				std::cout << b - a << "ms\n";
 			//	int new_size = aq->size() + 2; // chk!
 			//	for (int i = 0; i < thr_num; ++i) {
 			//		new_size = new_size + partial_list[i].size();
@@ -2462,11 +2533,13 @@ namespace wiz {
 			}
 			else {
 				llptr = new long long[file_length];
-
-				DoThread4 dothr(buffer + start[0], buffer + last[0], &option, llptr);
+				llptr2 = new long long[file_length];
+				long long len;
+				DoThread4 dothr(buffer + start[0], buffer + last[0], &option, llptr, llptr2, start[0], &len);
 
 				dothr();
 
+				*_llptr2_len = len;
 				//aq->insert(aq->end(), make_move_iterator(temp.begin()), make_move_iterator(temp.end()));
 			}
 
@@ -2477,7 +2550,9 @@ namespace wiz {
 
 			_buffer = buffer;
 			_llptr = llptr;
+			_llptr2 = llptr2;
 			*_buffer_len = file_length;
+			
 
 			return{ true, 1 };
 		}
@@ -2522,9 +2597,9 @@ namespace wiz {
 		}
 		bool end()const { return pInFile->eof(); } //
 	public:
-		bool operator() (const wiz::LoadDataOption& option, int thr_num, char*& buffer, long long*& llptr, long long* buffer_len)
+		bool operator() (const wiz::LoadDataOption& option, int thr_num, char*& buffer, long long*& llptr, long long* buffer_len, long long*& llptr2, long long* llptr2_len)
 		{
-			bool x = Utility::Reserve2_4(*pInFile, Num, &isFirst, option, thr_num, buffer, llptr, buffer_len).second > 0;
+			bool x = Utility::Reserve2_4(*pInFile, Num, &isFirst, option, thr_num, buffer, llptr, buffer_len, llptr2, llptr2_len).second > 0;
 			return x;
 		}
 	};
@@ -5937,13 +6012,13 @@ namespace wiz {
 				}
 				return true;
 			}
-			static bool __LoadData5_2(const char* buffer, long long buffer_len, const long long* llptr, UserType* _global, const wiz::LoadDataOption* _option,
+			static bool __LoadData5_2(const char* buffer, long long llptr2_len, const long long* llptr, const long long* llptr2, UserType* _global, const wiz::LoadDataOption* _option,
 				int start_state, int last_state, UserType** next) // first, strVec.empty() must be true!!
 			{
 				std::vector<std::string> varVec;
 				std::vector<std::string> valVec;
 
-				if (buffer_len <= 0) {
+				if (llptr2_len <= 0) {
 					return false;
 				}
 
@@ -5958,31 +6033,28 @@ namespace wiz {
 
 				nestedUT[0] = &global;
 
-				const char* x = buffer;
-				const char* x_next = buffer;
-				int count = 0;
+				
+				long long count = 0;
+				const long long* x = llptr2;
+				const long long* x_next = x;
 
-				while (x < buffer + buffer_len) {
+				for (long long i = 0; i < llptr2_len; ++i) {
 					x = x_next;
-					if (llptr[x - buffer] == 0) {
-						x_next++;
-						continue;
-					}
-					else {
-						x_next = x + llptr[x - buffer];
+					{
+						x_next = x + 1;
 					}
 					if (count > 0) {
 						count--;
 						continue;
 					}
-					long long len = llptr[x - buffer];
+					long long len = llptr[*x];
 
 
 					switch (state)
 					{
 					case 0:
 					{
-						if (len == 1 && (-1 != Equal(option.Left, x[0]) || -1 != Equal(option.Left2, x[0]))) {
+						if (len == 1 && (-1 != Equal(option.Left, buffer[*x]) || -1 != Equal(option.Left2, buffer[*x]))) {
 							//i += 1;
 
 							if (!varVec.empty()) {
@@ -6015,7 +6087,7 @@ namespace wiz {
 
 							state = 0;
 						}
-						else if (len == 1 && (-1 != Equal(option.Right, x[0]) || -1 != Equal(option.Right2, x[0]))) {
+						else if (len == 1 && (-1 != Equal(option.Right, buffer[*x]) || -1 != Equal(option.Right2, buffer[*x]))) {
 							//i += 1;
 
 
@@ -6073,26 +6145,12 @@ namespace wiz {
 							//	else {
 							//		bsPair = std::make_pair(false, Token2());
 							//	}
-							bool pass = true;
-							const char* x_next_temp = nullptr;
-							{
-								const char* temp = x_next;
-								while (llptr[temp - buffer] == 0) {
-									if (temp >= buffer + buffer_len) {
-										pass = false;
-										break;
-									}
-									temp++;
-								}
-								x_next_temp = temp;
-							}
+							if (x < llptr2 + llptr2_len - 1) {
+								long long _len = llptr[*(x+1)];
 
-							if (pass) {
-								long long _len = llptr[x_next_temp - buffer];
-
-								if (_len == 1 && -1 != Equal(option.Assignment, x_next_temp[0])) {
+								if (_len == 1 && -1 != Equal(option.Assignment, buffer[*(x+1)])) {
 									// var2
-									var = std::string(x, len);
+									var = std::string(buffer + *x, len);
 
 									state = 1;
 									//i += 1;
@@ -6104,8 +6162,8 @@ namespace wiz {
 								}
 								else {
 									// var1
-									if (x <= buffer + buffer_len - 1) {
-										val = std::string(x, len);
+									if (x <= llptr2 + llptr2_len - 1) {
+										val = std::string(buffer + *x, len);
 
 										varVec.push_back(var);
 										valVec.push_back(val);
@@ -6121,9 +6179,9 @@ namespace wiz {
 							else
 							{
 								// var1
-								if (x <= buffer + buffer_len - 1)
+								if (x <= llptr2 + llptr2_len - 1) 
 								{
-									val = std::string(x, len);
+									val = std::string(buffer + *x, len);
 									varVec.push_back(var);
 									valVec.push_back(val);
 									//nestedUT[braceNum]->AddItem("", "");// std::move(val));
@@ -6139,7 +6197,7 @@ namespace wiz {
 					break;
 					case 1:
 					{
-						if (len == 1 && (-1 != Equal(option.Left, x[0]) || -1 != Equal(option.Left2, x[0]))) {
+						if (len == 1 && (-1 != Equal(option.Left, buffer[*x]) || -1 != Equal(option.Left2, buffer[*x]))) {
 							//i += 1;
 
 							nestedUT[braceNum]->ReserveIList(nestedUT[braceNum]->GetIListSize() + varVec.size());
@@ -6172,8 +6230,8 @@ namespace wiz {
 							state = 0;
 						}
 						else {
-							if (x <= buffer + buffer_len - 1) {
-								val = std::string(x, len);
+							if (x <= llptr2 + llptr2_len - 1) {
+								val = std::string(buffer + *x, len);
 
 								//i += 1;
 
@@ -6212,8 +6270,8 @@ namespace wiz {
 				if (state != last_state) {
 					throw std::string("error final state is not last_state!  : ") + toStr(state);
 				}
-				if (x > buffer + buffer_len) {
-				//	throw std::string("error x > buffer + buffer_len: ");
+				if (x > llptr2 + llptr2_len) {
+					throw std::string("error x > buffer + buffer_len: ");
 				}
 				return true;
 			}
@@ -6734,39 +6792,32 @@ namespace wiz {
 
 				return -1;
 			}
-			static long long FindRight3(const char* buffer, const long long* llptr, long long start, long long last, const wiz::LoadDataOption& option)
+			static long long FindRight3(const char* buffer, const long long* llptr, const long long* llptr2, long long start, long long last, const wiz::LoadDataOption& option)
 			{
-				for (long long i = last; i >= start; --i) {
+				for (long long a = last; a >= start; --a) {
+					long long i = llptr2[a];
+
 					if (llptr[i] == 1 && (-1 != Equal(option.Right, buffer[i]) || -1 != Equal(option.Right2, buffer[i]))) {
-						return i;
+						return a;
 					}
 
 					bool pass = false;
 					if (llptr[i] == 1 && (-1 != Equal(option.Left, buffer[i]) || -1 != Equal(option.Left2, buffer[i]))) {
-						return i;
+						return a;
 					}
 					else if (llptr[i] == 1 && -1 != Equal(option.Assignment, buffer[i])) {
 						//
 						pass = true;
 					}
 
-					if (pass == false) {
-						long long _i = i + 1;
-						{	
-							while (llptr[_i] == 0) {
-								if (_i >= last) {
-									break;
-								}
-								_i += 1;
-							}
-						}
-						if (_i < last && !(llptr[_i] == 1 && -1 != Equal(option.Assignment, buffer[_i])))
+					if (a < last && pass == false) {
+						long long _i = llptr2[a + 1];
+						if (!(llptr[_i] == 1 && -1 != Equal(option.Assignment, buffer[_i])))
 						{                // NOT
-							return _i;
+							return a;
 						}
 					}
 				}
-
 				return -1;
 			}
 		public:
@@ -7093,12 +7144,14 @@ int b = clock();
 				const int pivot_num = parse_num - 1;
 				char* buffer = nullptr;
 				long long* llptr = nullptr;
+				long long* llptr2 = nullptr;
 				long long buffer_total_len;
+				long long llptr2_len = 0;
 
 				bool end = false;
 				{
 					int a = clock();
-					end = !reserver(option, lex_thr_num, buffer, llptr, &buffer_total_len);
+					end = !reserver(option, lex_thr_num, buffer, llptr, &buffer_total_len, llptr2, &llptr2_len);
 					int b = clock();
 					std::cout << b - a << "ms ";
 				}
@@ -7115,16 +7168,21 @@ int b = clock();
 
 					a = clock();
 
-					std::set<int> _pivots;
-					std::vector<int> pivots;
-					const int last_idx = buffer_total_len - 1;
+					std::set<long long> _pivots;
+					std::vector<long long> pivots;
+					const long long num = llptr2_len; //
 
 					if (pivot_num > 0) {
 						std::vector<int> pivot;
+						pivots.reserve(pivot_num);
+						pivot.reserve(pivot_num);
 
+						int w = clock();
 						for (int i = 0; i < pivot_num; ++i) {
-							pivot.push_back(FindRight3(buffer, llptr, (last_idx / (pivot_num + 1)) * (i), (last_idx / (pivot_num + 1)) * (i + 1) - 1, option));
+							pivot.push_back(FindRight3(buffer, llptr, llptr2, (num / (pivot_num + 1)) * (i), (num / (pivot_num + 1)) * (i + 1) - 1, option));
 						}
+						int v = clock();
+						std::cout << v - w << "ms" << "\n";
 
 						for (int i = 0; i < pivot.size(); ++i) {
 							if (pivot[i] != -1) {
@@ -7145,20 +7203,20 @@ int b = clock();
 						std::vector<std::thread> thr(pivots.size() + 1);
 
 						{
-							int idx = pivots.empty() ? last_idx : pivots[0]; // chk?
-							long long buffer_len = idx - 0 + 1;
-							thr[0] = std::thread(__LoadData5_2, buffer, buffer_len, llptr, &__global[0], &option, 0, 0, &next[0]);
+							long long idx = pivots.empty() ? num-1 : pivots[0]; // chk? - !!
+							long long _llptr2_len = idx - 0 + 1;
+							thr[0] = std::thread(__LoadData5_2, buffer, _llptr2_len, llptr, llptr2, &__global[0], &option, 0, 0, &next[0]);
 							// __LoadData4 -> __LoadData5
 						}
 
 						for (int i = 1; i < pivots.size(); ++i) {
-							long long buffer_len = pivots[i] - (pivots[i - 1] + 1) + 1;
-							thr[i] = std::thread(__LoadData5_2, buffer + pivots[i - 1] + 1, buffer_len, llptr + pivots[i - 1] + 1, &__global[i], &option, 0, 0, &next[i]);
+							long long _llptr2_len = pivots[i] - (pivots[i - 1] + 1) + 1;
+							thr[i] = std::thread(__LoadData5_2, buffer, _llptr2_len, llptr, llptr2 + pivots[i - 1] + 1, &__global[i], &option, 0, 0, &next[i]);
 						}
 
 						if (pivots.size() >= 1) {
-							long long buffer_len = last_idx - (pivots.back() + 1) + 1;
-							thr[pivots.size()] = std::thread(__LoadData5_2, buffer + pivots.back() + 1, buffer_len, llptr + pivots.back() + 1, &__global[pivots.size()],
+							long long _llptr2_len = num-1 - (pivots.back() + 1) + 1;
+							thr[pivots.size()] = std::thread(__LoadData5_2, buffer, _llptr2_len, llptr, llptr2 + pivots.back() + 1, &__global[pivots.size()],
 								&option, 0, 0, &next[pivots.size()]);
 						}
 
@@ -7185,6 +7243,7 @@ int b = clock();
 						catch (...) {
 							delete[] buffer; 
 							delete[] llptr;
+							delete[] llptr2;
 							buffer = nullptr;
 							throw "in Merge, error";
 						}
@@ -7192,6 +7251,7 @@ int b = clock();
 							if (next[pivots.size()] != nullptr && next[pivots.size()]->GetParent() != nullptr) {
 								delete[] buffer;
 								delete[] llptr;
+								delete[] llptr2;
 								buffer = nullptr;
 								throw "merge error";
 							}
@@ -7211,6 +7271,7 @@ int b = clock();
 				int b = clock();
 				delete[] buffer;
 				delete[] llptr;
+				delete[] llptr2;
 
 				global = std::move(_global);
 				std::cout << b - a << "ms" << " " << b - c << "ms" << "\n";
@@ -7485,6 +7546,66 @@ int b = clock();
 					option.Right = ']'; option.Right2 = ('}');
 					option.LineComment = ('#');
 					option.Removal = ',';
+
+					char* buffer = nullptr;
+					ifReserver.Num = 1 << 19;
+					//	strVec.reserve(ifReserver.Num);
+					// cf) empty file..
+					if (false == _LoadData5_2(ifReserver, globalTemp, option, lex_thr_num, parse_num))
+					{
+						inFile.close();
+						return false; // return true?
+					}
+
+					inFile.close();
+				}
+				catch (const char* err) { std::cout << err << std::endl; inFile.close(); return false; }
+				catch (const std::string & e) { std::cout << e << std::endl; inFile.close(); return false; }
+				catch (std::exception e) { std::cout << e.what() << std::endl; inFile.close(); return false; }
+				catch (...) { std::cout << "not expected error" << std::endl; inFile.close(); return false; }
+
+
+				global = std::move(globalTemp);
+
+				return true;
+			}
+			static bool LoadDataFromFile4(const std::string& fileName, UserType& global, int lex_thr_num, int parse_num) /// global should be empty
+			{
+				if (lex_thr_num <= 0) {
+					lex_thr_num = std::thread::hardware_concurrency();
+				}
+				if (lex_thr_num <= 0) {
+					lex_thr_num = 1;
+				}
+
+				if (parse_num <= 0) {
+					parse_num = std::thread::hardware_concurrency();
+				}
+				if (parse_num <= 0) {
+					parse_num = 1;
+				}
+
+				bool success = true;
+				std::ifstream inFile;
+				inFile.open(fileName, std::ios::binary);
+
+
+				if (true == inFile.fail())
+				{
+					inFile.close(); return false;
+				}
+
+				UserType globalTemp;
+
+				try {
+
+					InFileReserver4 ifReserver(inFile);
+					wiz::LoadDataOption option;
+					option.Assignment = ('=');
+					option.Left = '{';  option.Left2 = ('{');
+					option.Right = '}'; option.Right2 = ('}');
+					option.LineComment = ('#');
+					option.Removal = ' ';
 
 					char* buffer = nullptr;
 					ifReserver.Num = 1 << 19;
